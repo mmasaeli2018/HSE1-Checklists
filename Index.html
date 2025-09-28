@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>چک‌لیست HSE</title>
+  <style>
+    body { font-family: Tahoma, Arial; direction: rtl; padding: 20px; }
+    .box { max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 18px; border-radius: 8px; }
+    label { display: block; margin-top: 12px; }
+    select, input { width: 100%; padding: 8px; margin-top: 6px; border-radius: 4px; border: 1px solid #ccc; }
+    button { margin-top: 12px; padding: 10px 14px; border-radius: 6px; border: none; cursor: pointer; }
+    .ok { margin-top: 12px; padding: 12px; background: #e8f5e9; border-radius: 6px; }
+    .err { margin-top: 12px; padding: 12px; background: #ffebee; border-radius: 6px; }
+    a.link { word-break: break-all; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h3>ورود به چک‌لیست‌های HSE</h3>
+    <div>
+      <label>انتخاب چک‌لیست</label>
+      <select id="checklistSelect"></select>
+    </div>
+    <div>
+      <label>رمز دسترسی</label>
+      <input id="pwd" type="password" placeholder="رمز را وارد کنید" />
+    </div>
+    <div>
+      <button onclick="submitForm()">دریافت لینک</button>
+    </div>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // داده‌های چک‌لیست‌ها داخل خود HTML
+    const checklists = [
+      { name: "چک‌لیست سالن تولید", password: "1234", link: "https://example.com/form1" },
+      { name: "چک‌لیست انبار", password: "abcd", link: "https://example.com/form2" },
+      { name: "چک‌لیست دفتر", password: "5678", link: "https://example.com/form3" }
+    ];
+
+    function populateDropdown() {
+      const sel = document.getElementById('checklistSelect');
+      sel.innerHTML = '';
+      if (!checklists.length) {
+        const opt = document.createElement('option');
+        opt.text = 'هیچ چک‌لیستی یافت نشد';
+        sel.add(opt);
+        return;
+      }
+      checklists.forEach(c => {
+        const o = document.createElement('option');
+        o.text = c.name;
+        o.value = c.name;
+        sel.add(o);
+      });
+    }
+
+    function submitForm() {
+      const sel = document.getElementById('checklistSelect');
+      const checklistName = sel.value;
+      const pwd = document.getElementById('pwd').value || '';
+      const resultDiv = document.getElementById('result');
+
+      const selected = checklists.find(c => c.name === checklistName);
+
+      if (!selected) {
+        resultDiv.innerHTML = '<div class="err">چک‌لیست یافت نشد</div>';
+        return;
+      }
+
+      if (selected.password === pwd) {
+        resultDiv.innerHTML = `<div class="ok">✅ لینک چک‌لیست:<br><a class="link" target="_blank" href="${selected.link}">${selected.link}</a></div>`;
+      } else {
+        resultDiv.innerHTML = '<div class="err">❌ رمز اشتباه است</div>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', populateDropdown);
+  </script>
+</body>
+</html>
